@@ -24,10 +24,10 @@ Copy contents of the log file to the segment file, if applicable
 Delete the log file after transfer
 */
 
-void apply_log_for_segment(rvm_t rvm, string segname)
+void createLogFile(rvm_t rvm, string segname)
 {
-  string seg_file_path = rvm->path + "/" + segname;
-  string log_file_path = seg_file_path + ".log";
+  string seg_file_path  = rvm->path + "/" + segname;
+  string log_file_path  = seg_file_path + ".log";
   int seg_file, log_file;
   int offset, size;
   void *value;
