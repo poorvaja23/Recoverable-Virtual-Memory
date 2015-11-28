@@ -72,7 +72,6 @@ void createLogFile(rvm_t rvm, string segname)
 }
 
 
-
 rvm_t rvm_init(const char *directory){
   struct stat st = {0};
 //  rvm_t store = rvm_t();
