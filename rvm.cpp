@@ -11,6 +11,6 @@ rvm_t rvm_init(const char *directory){
     mkdir(directory, 0700);
   }
   rvm_t store;
-  store.segment_dir = string(directory);
+  store.store_dir = string(directory);
   return store;
 }

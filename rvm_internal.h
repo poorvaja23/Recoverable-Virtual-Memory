@@ -2,5 +2,5 @@
 using std::string;
 
 typedef struct rvm_t{
-  std::string segment_dir;
+  std::string store_dir;
 }rvm_t;
