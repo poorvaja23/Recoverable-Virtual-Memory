@@ -26,7 +26,7 @@ Delete the log file after transfer
 
 void createLogFile(rvm_t rvm, string segname)
 {
-  string seg_file_path  = rvm->path + "/" + segname;
+  string seg_file_path  = rvm->store_dir + "/" + segname;
   string log_file_path  = seg_file_path + ".log";
   int seg_file, log_file;
   int offset, size;
