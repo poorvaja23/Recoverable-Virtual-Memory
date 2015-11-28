@@ -1,9 +1,23 @@
 #include "rvm.h"
-#include <sys/types.h>
+#include <iostream>
+#include <map>
+#include <cstdlib>
+#include <cstring>
 #include <sys/stat.h>
+#include <cstdio>
+#include <time.h>
+#include <fstream>
 #include <unistd.h>
-#include <string>
-using std::string;
+#include <fcntl.h>
+#include <dirent.h>
+
+using namespace std;
+
+#ifdef DEBUG
+#define PRINT_DEBUG(M, ...) printf("%s\n", M)
+#else
+#define PRINT_DEBUG(M, ...)
+#endif
 
 /*
 Copy contents of the log file to the segment file, if applicable
@@ -64,28 +78,28 @@ rvm_t rvm_init(const char *directory){
   }else{
     //directory already exists
   }
-  store.segment_dir = string(directory);
+  store->store_dir = string(directory);
   return store;
 }
 
 void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)
 {
   string seg_name = string(segname);
+  int length = rvm->store_dir.length() + strlen(segname) + 1;
+  char *file_path = new char(length);
 
   map<string, seg_t>::iterator i;
 	i = rvm->seg_map.find(seg_name);
-	if(i != rvm->segment_map.end())
+	if(i != rvm->seg_map.end())
 	{
 		if(i->second.is_mapped == 1)
-			return;    //NULL?
+			return NULL;    //NULL?
 	}
 
   //   createLogFile(rvm, seg_name);
 
   /*get the file path*/
-	int length = rvm->store_dir.length() + strlen(segname) + 1;
-	char *file_path = new char(length);
-  strcpy(file_path, rvm->path.c_str());
+  strcpy(file_path, rvm->store_dir.c_str());
 	strcat(file_path, "/");
 	strcat(file_path, segname);
 
@@ -119,7 +133,7 @@ void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)
 
 /*update the segment structure*/
   seg_t seg;
-	seg.segname = seg_name;
+	seg.seg_name = seg_name;
 	seg.size = size_to_create;
 	seg.is_mapped = 1;
 	seg.address = operator new(size_to_create);
@@ -131,8 +145,10 @@ void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)
     	close(file);
     	return NULL;
     }
-
-	  rvm->segment_map[seg_name] = seg;
+ delete(file_path);
+	  rvm->seg_map[seg_name] = seg;
 
 	close(file);
+  cout << "this is final return" << "\n";
+  return rvm->seg_map[seg_name].address;
 }
