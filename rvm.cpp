@@ -85,4 +85,6 @@ void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)
 	  rvm->segment_map[seg_name] = seg;
 
 	close(file);
+  cout << "this is final return" << \n" ;
+  return rvm->segment_map[seg_name].address;
 }
