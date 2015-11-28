@@ -26,21 +26,18 @@ Delete the log file after transfer
 
 void createLogFile(rvm_t rvm, string segname)
 {
-  string seg_file_path  = rvm->store_dir + "/" + segname;
-  string log_file_path  = seg_file_path + ".log";
+  string seg_file_path = rvm->store_dir + "/" + segname;
+  string log_file_path = seg_file_path + ".log";
   int seg_file, log_file;
   int offset, size;
   void *value;
   int size_of_int = sizeof(int);
-
-
   seg_file = open(seg_file_path.c_str(), O_RDWR | O_CREAT, 0755);
   if(seg_file == -1)
   {
     PRINT_DEBUG("Error opening segment file");
     return;
   }
-
   log_file = open(log_file_path.c_str(), O_RDWR | O_CREAT, 0755);
   if(log_file == -1)
   {
@@ -48,7 +45,6 @@ void createLogFile(rvm_t rvm, string segname)
     PRINT_DEBUG("Error opening log file");
     return;
   }
-
   int file_size = lseek(log_file, 0, SEEK_END);
   if(file_size <= 0)
     return;
@@ -69,12 +65,10 @@ void createLogFile(rvm_t rvm, string segname)
     system(cmd.c_str());
     cmd = "touch " + log_file_path;
     system(cmd.c_str());
-}
-
+  }
 
 rvm_t rvm_init(const char *directory){
   struct stat st = {0};
-//  rvm_t store = rvm_t();
 
   if (stat(directory, &st) == -1) {
     mkdir(directory, 0700);
@@ -100,7 +94,7 @@ void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)
 			return NULL;    //NULL?
 	}
 
-  //   createLogFile(rvm, seg_name);
+  createLogFile(rvm, seg_name);
 
   /*get the file path*/
   strcpy(file_path, rvm->store_dir.c_str());
