@@ -150,3 +150,37 @@ void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)
   cout << "this is final return" << "\n";
   return rvm->seg_map[seg_name].address;
 }
+
+void rvm_unmap(rvm_t rvm, void *segbase)
+{
+	map<string, seg_t>::iterator it;
+	string seg_name;
+	for(it = rvm->seg_map.begin(); it != rvm->seg_map.end(); it++)
+	{
+    seg_name = it->first;
+    /*if the segment is mapped*/
+		if(it->second.address == segbase)
+			break;
+	}
+  	/* There is no such segment*/
+	if(it->second.address != segbase)
+	{
+		PRINT_DEBUG("The segment to be unmapped does not exist");
+		return;
+	}
+	/*This process has not being mapped to the segment*/
+	if(it->second.is_mapped == 0)
+	{
+		PRINT_DEBUG("The segment to be unmapped has not been mapped before.");
+		return;
+	}
+  /*The segment is being currently modified*/
+	if(it->second.in_use)
+	{
+		PRINT_DEBUG("The segment to be unmapped is in use.");
+		return;
+	}
+
+	operator delete(it->second.address);
+	rvm->seg_map.erase(it);
+}
