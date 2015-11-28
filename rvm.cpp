@@ -68,7 +68,7 @@ void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)
     }
 
 /*update the segment structure*/
-  segment_t seg;
+  seg_t seg;
 	seg.segname = seg_name;
 	seg.size = size_to_create;
 	seg.is_mapped = 1;
@@ -86,5 +86,3 @@ void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)
 
 	close(file);
 }
-
-    

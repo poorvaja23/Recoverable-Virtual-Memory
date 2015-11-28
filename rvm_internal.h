@@ -3,10 +3,11 @@
 using std::string;
 
 typedef struct seg_t{
-  std::string   seg_name;
+  std::string   seg_nam  ;
   int           size;
   bool          is_mapped;
-  bool          is_about_to_modify;
+  bool          in_use;
+  void*         address;
 }seg_t;
 
 typedef struct rvm_t{
