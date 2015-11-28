@@ -23,7 +23,7 @@ using namespace std;
 Copy contents of the log file to the segment file, if applicable
 Delete the log file after transfer
 */
-/*
+
 void apply_log_for_segment(rvm_t rvm, string segname)
 {
   string seg_file_path = rvm->path + "/" + segname;
@@ -32,12 +32,15 @@ void apply_log_for_segment(rvm_t rvm, string segname)
   int offset, size;
   void *value;
   int size_of_int = sizeof(int);
+
+
   seg_file = open(seg_file_path.c_str(), O_RDWR | O_CREAT, 0755);
   if(seg_file == -1)
   {
     PRINT_DEBUG("Error opening segment file");
     return;
   }
+
   log_file = open(log_file_path.c_str(), O_RDWR | O_CREAT, 0755);
   if(log_file == -1)
   {
@@ -45,6 +48,7 @@ void apply_log_for_segment(rvm_t rvm, string segname)
     PRINT_DEBUG("Error opening log file");
     return;
   }
+
   int file_size = lseek(log_file, 0, SEEK_END);
   if(file_size <= 0)
     return;
@@ -65,9 +69,9 @@ void apply_log_for_segment(rvm_t rvm, string segname)
     system(cmd.c_str());
     cmd = "touch " + log_file_path;
     system(cmd.c_str());
-  }
+}
 
-*/
+
 
 rvm_t rvm_init(const char *directory){
   struct stat st = {0};
