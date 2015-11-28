@@ -5,6 +5,56 @@
 #include <string>
 using std::string;
 
+/*
+Copy contents of the log file to the segment file, if applicable
+Delete the log file after transfer
+*/
+/*
+void apply_log_for_segment(rvm_t rvm, string segname)
+{
+  string seg_file_path = rvm->path + "/" + segname;
+  string log_file_path = seg_file_path + ".log";
+  int seg_file, log_file;
+  int offset, size;
+  void *value;
+  int size_of_int = sizeof(int);
+  seg_file = open(seg_file_path.c_str(), O_RDWR | O_CREAT, 0755);
+  if(seg_file == -1)
+  {
+    PRINT_DEBUG("Error opening segment file");
+    return;
+  }
+  log_file = open(log_file_path.c_str(), O_RDWR | O_CREAT, 0755);
+  if(log_file == -1)
+  {
+    close(seg_file);
+    PRINT_DEBUG("Error opening log file");
+    return;
+  }
+  int file_size = lseek(log_file, 0, SEEK_END);
+  if(file_size <= 0)
+    return;
+    lseek(log_file, 0, 0);
+    while(lseek(log_file, 0, SEEK_CUR) < file_size)
+    {
+      read(log_file, &offset, size_of_int);
+      read(log_file, &size, size_of_int);
+      value = operator new(size);
+      read(log_file, value, size);
+      lseek(seg_file, offset, 0);
+      write(seg_file, value, size);
+      operator delete(value);
+    }
+    close(seg_file);
+    close(log_file);
+    string cmd = "rm " + log_file_path;
+    system(cmd.c_str());
+    cmd = "touch " + log_file_path;
+    system(cmd.c_str());
+  }
+
+*/
+
 rvm_t rvm_init(const char *directory){
   struct stat st = {0};
   rvm_t store;
