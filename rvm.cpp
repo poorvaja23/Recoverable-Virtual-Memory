@@ -71,7 +71,7 @@ void apply_log_for_segment(rvm_t rvm, string segname)
 
 rvm_t rvm_init(const char *directory){
   struct stat st = {0};
-  rvm_t store;
+  rvm_t store = rvm_t();
 
   if (stat(directory, &st) == -1) {
     mkdir(directory, 0700);
