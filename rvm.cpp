@@ -75,15 +75,16 @@ void createLogFile(rvm_t rvm, string segname)
 
 rvm_t rvm_init(const char *directory){
   struct stat st = {0};
-  rvm_t store = rvm_t();
+//  rvm_t store = rvm_t();
 
   if (stat(directory, &st) == -1) {
     mkdir(directory, 0700);
   }else{
+    PRINT_DEBUG("DIRECTORY EXISTS.");
     //directory already exists
   }
-  store->store_dir = string(directory);
-  return store;
+  rvm_t rvm = new rvm_data(directory);
+  return rvm;
 }
 
 void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)

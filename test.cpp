@@ -18,7 +18,7 @@ int main(int argc, char **argv)
   char* segs[1];
   rvm = rvm_init("rvm_segments");
   cout << rvm->store_dir << "\n";
-  //segs[0] = (char *) rvm_map(rvm, "testseg", 10000);
+  segs[0] = (char *) rvm_map(rvm, "testseg", 10000);
   //string play = string(segs[0]);
   //cout << play <<"\n";
   return 0;
