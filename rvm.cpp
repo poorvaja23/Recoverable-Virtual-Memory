@@ -150,3 +150,26 @@ void *rvm_map(rvm_t rvm, const char *segname, int size_to_create)
   cout << "this is final return" << "\n";
   return rvm->seg_map[seg_name].address;
 }
+
+
+void rvm_destroy(rvm_t rvm, const char *segname){
+
+  map<string,seg_t>::iterator iterator;
+  string name_to_compare = segname;
+  iterator = rvm->seg_map.find(name_to_compare);
+  if (iterator == rvm->seg_map.end()){
+    //The segment doesn't exist
+    return;
+  }
+  if (iterator->second.is_mapped == 1){
+    //The segment is already mapped
+    return;
+  }
+  //Otherwise erase log and backing store
+  operator delete(iterator->second.address);
+  rvm->seg_map.erase(iterator);
+  string del_log = "rm " + rvm->store_dir + "/" + name_to_compare;
+  system(del_log.c_str());
+  del_log += ".log";
+  system(del_log.c_str());
+}
