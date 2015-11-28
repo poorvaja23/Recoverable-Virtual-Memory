@@ -2,15 +2,17 @@
 #include <string>
 using std::string;
 
-typedef struct seg_t{
-  std::string   seg_nam  ;
+typedef struct segment{
+  std::string   seg_name  ;
   int           size;
   bool          is_mapped;
   bool          in_use;
   void*         address;
 }seg_t;
 
-typedef struct rvm_t{
+typedef struct rvm{
   std::string                   store_dir;
   std::map<std::string, seg_t>  seg_map;
-}rvm_t;
+}rvm_data;
+
+typedef rvm_data* rvm_t;
