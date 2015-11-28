@@ -10,7 +10,7 @@ rvm_t rvm_init(const char *directory){
   if (stat(directory, &st) == -1) {
     mkdir(directory, 0700);
   }
-  rvm_t segment;
-  segment.segment_dir = string(directory);
-  return segment;
+  rvm_t store;
+  store.segment_dir = string(directory);
+  return store;
 }
