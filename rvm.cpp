@@ -357,3 +357,23 @@ void rvm_abort_trans(trans_t tid)
 	/*Remove transaction info from the transaction map*/
 	transaction_map.erase(tid);
 }
+
+void rvm_truncate_log(rvm_t rvm)
+{
+	DIR *dp;
+    struct dirent *dirp;
+
+    if((dp = opendir(rvm->store_dir.c_str())) == NULL) {
+        return;
+    }
+    string file_name;
+    while ((dirp = readdir(dp)) != NULL)
+    {
+        file_name = string(dirp->d_name);
+        if(file_name.length() > 4 && file_name.compare(file_name.length()-4, 4, ".log") == 0)
+        {
+        	createLogFile(rvm, file_name.substr(0, file_name.length()-4));
+        }
+    }
+    closedir(dp);
+}
