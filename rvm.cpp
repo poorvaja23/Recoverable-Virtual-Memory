@@ -257,11 +257,17 @@ trans_t rvm_begin_trans(rvm_t rvm, int numsegs, void **segbases)
 }
 
 void rvm_about_to_modify(trans_t tid, void *segbase, int offset, int size){
-  // trans_data
 
-  if(trans_data.count(tid)==0){
+  if(transaction_map.count(tid)==0){
+    PRINT_DEBUG("Invalid Transaction ID");
     return;
   }
-  if (trans_data[tid].)
+  if (transaction_map[tid].segments.count(segbase) == 0){
+    
+    return;
+  }
+  if (offset+size > transaction_map[tid].segments[segbase]->size){
+    return;
+  }
 
 }
