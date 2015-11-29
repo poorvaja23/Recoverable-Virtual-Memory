@@ -211,7 +211,6 @@ void rvm_destroy(rvm_t rvm, const char *segname){
   system(del_log.c_str());
 }
 
-
 trans_t rvm_begin_trans(rvm_t rvm, int numsegs, void **segbases)
 {
   map<string, seg_t>::iterator it;
@@ -248,6 +247,9 @@ trans_t rvm_begin_trans(rvm_t rvm, int numsegs, void **segbases)
 	{
 		transaction.segments[trans->first]->in_use = 1;
 	}
+}
+
+void rvm_about_to_modify(trans_t tid, void *segbase, int offset, int size){
 
   /*Assign a transaction ID*/
   srand(time(NULL));
