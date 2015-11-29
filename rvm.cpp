@@ -19,6 +19,10 @@ using namespace std;
 #define PRINT_DEBUG(M, ...)
 #endif
 
+#define MAX_TRANS_ID 1000000
+
+map<trans_t, trans_data> transaction_map;
+
 /*
 Copy contents of the log file to the segment file, if applicable
 Delete the log file after transfer
@@ -210,7 +214,7 @@ void rvm_destroy(rvm_t rvm, const char *segname){
 
 trans_t rvm_begin_trans(rvm_t rvm, int numsegs, void **segbases)
 {
-  map<string, segment_t>::iterator it;
+  map<string, seg_t>::iterator it;
   trans_data transaction;
   transaction.rvm = rvm;
 	int flag;
@@ -242,7 +246,14 @@ trans_t rvm_begin_trans(rvm_t rvm, int numsegs, void **segbases)
   map<void*, seg_t*>::iterator trans;
 	for(trans = transaction.segments.begin(); trans != transaction.segments.end(); trans++)
 	{
-		transaction.segments[trans->first]->in_use = 1;						
+		transaction.segments[trans->first]->in_use = 1;
 	}
 
+  /*Assign a transaction ID*/
+  srand(time(NULL));
+	trans_t trans_id =  rand() % MAX_TRANS_ID;
+	while(transaction_map.count(trans_id) == 1)
+		trans_id = rand() % MAX_TRANS_ID;
+	transaction_map[trans_id] = transaction;
+	return trans_id;
 }
