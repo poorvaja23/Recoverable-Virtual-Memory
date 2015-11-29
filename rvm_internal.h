@@ -1,5 +1,6 @@
 #include <map>
 #include <string>
+#include <list>
 using namespace std;
 
 typedef struct segment{

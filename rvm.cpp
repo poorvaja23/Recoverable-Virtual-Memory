@@ -264,4 +264,42 @@ void rvm_about_to_modify(trans_t tid, void *segbase, int offset, int size){
   }
   if (trans_data[tid].)
 
+ }
+
+void rvm_abort_trans(trans_t tid)
+{
+	PRINT_DEBUG("In abort transaction");
+  /*check if the transaction id is valid*/
+	if(transaction_map.count(tid) == 0)
+	{
+		PRINT_DEBUG("Invalid transaction id");
+		return;
+  }
+
+	map<void*, list<undo_record_t> >::iterator it;
+	void *segbase;
+	undo_record_t undo_record;
+	for(it = transaction_map[tid].undo_records.begin(); it != transaction_map[tid].undo_records.end(); it++)
+	{
+		segbase = it->first;
+    /*Copy the backup for each segment in the transaction*/
+		while(!it->second.empty())
+		{
+			undo_record = it->second.front();
+			memcpy((char*)segbase+undo_record.offset, undo_record.backup, undo_record.size);
+			operator delete(undo_record.backup);
+			it->second.pop_front();
+		}
+		transaction_map[tid].undo_records.erase(it);
+	}
+
+/*mark all the segments are not in use anymore*/
+	trans_data trans = transaction_map[tid];
+	map<void*, seg_t*>::iterator seg;
+	for(seg = trans.segments.begin(); seg != trans.segments.end(); seg++)
+	{
+		trans.segments[seg->first]->in_use = 0;
+	}
+	/*Remove transaction info from the transaction map*/
+	transaction_map.erase(tid);
 }
