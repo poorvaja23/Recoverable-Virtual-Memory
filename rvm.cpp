@@ -195,7 +195,7 @@ void rvm_destroy(rvm_t rvm, const char *segname){
     return;
   }
   if (iterator->second.is_mapped == 1){
-    //The segment is already mapped
+    //The segment is currently mapped
     return;
   }
   //Otherwise erase log and backing store
@@ -207,6 +207,44 @@ void rvm_destroy(rvm_t rvm, const char *segname){
   system(del_log.c_str());
 }
 
+trans_t rvm_begin_trans(rvm_t rvm, int numsegs, void **segbases)
+{
+  map<string, segment_t>::iterator it;
+  trans_data transaction;
+  transaction.rvm = rvm;
+	int flag;
+	for(int i = 0; i < numsegs; i++)
+	{
+    flag = 0;
+    for(it = rvm->seg_map.begin(); it != rvm->seg_map.end(); it++)
+		{
+			if(it->second.address == segbases[i])
+			{
+        flag = 1;
+        /*the segment is being used*/
+        if(it->second.in_use == 1)
+          return -1;
+        /*the segment is not mapped*/
+        if(it->second.is_mapped == 0)
+          return -1;
+
+        /*the segment is available so create a transaction map entry*/
+        transaction.segments[segbases[i]] = &(it->second);
+      }
+    }
+    /*The segment does not exist*/
+    if(flag == 0)
+      return -1;
+   }
+
+   /*if the segments were available set the in_use flag*/
+  map<void*, seg_t*>::iterator trans;
+	for(trans = transaction.segments.begin(); trans != transaction.segments.end(); trans++)
+	{
+		transaction.segments[trans->first]->in_use = 1;
+	}
+}
+
 void rvm_about_to_modify(trans_t tid, void *segbase, int offset, int size){
-  
+
 }
