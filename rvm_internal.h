@@ -1,5 +1,6 @@
 #include <map>
 #include <string>
+#include <list>
 using namespace std;
 
 typedef struct segment{
@@ -32,9 +33,10 @@ typedef struct rvm{
 }rvm_data;
 
 typedef rvm_data* rvm_t;
+
 typedef int trans_t;
-typedef struct
-{
+
+typedef struct{
   int offset;
   int size;
   void *backup;
