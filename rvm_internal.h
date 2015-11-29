@@ -32,7 +32,9 @@ typedef struct rvm{
 }rvm_data;
 
 typedef rvm_data* rvm_t;
+
 typedef int trans_t;
+
 typedef struct transaction_data {
   rvm_t rvm;
   map<void*, seg_t*> segments;
