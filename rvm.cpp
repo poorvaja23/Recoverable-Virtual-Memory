@@ -206,3 +206,7 @@ void rvm_destroy(rvm_t rvm, const char *segname){
   del_log += ".log";
   system(del_log.c_str());
 }
+
+void rvm_about_to_modify(trans_t tid, void *segbase, int offset, int size){
+  
+}
