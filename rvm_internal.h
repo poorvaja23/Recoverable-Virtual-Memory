@@ -3,7 +3,7 @@
 using namespace std;
 
 typedef struct segment{
-  string   seg_name  ;
+  string        seg_name  ;
   int           size;
   bool          is_mapped;
   bool          in_use;

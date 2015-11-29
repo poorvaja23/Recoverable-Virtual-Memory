@@ -263,11 +263,62 @@ void rvm_about_to_modify(trans_t tid, void *segbase, int offset, int size){
     return;
   }
   if (transaction_map[tid].segments.count(segbase) == 0){
-    
+    PRINT_DEBUG("No such segbase found");
     return;
   }
   if (offset+size > transaction_map[tid].segments[segbase]->size){
+    PRINT_DEBUG("Segment overflow");
     return;
   }
 
+    undo_record_t undo_record;
+    undo_record.offset = offset;
+    undo_record.size = size;
+    undo_record.backup = operator new(size);
+    memcpy(undo_record.backup, (char*)segbase+offset, size);
+    transaction_map[tid].undo_records[segbase].push_front(undo_record);
+}
+
+void rvm_commit_trans(trans_t tid){
+  if(transaction_map.count(tid) == 0){
+    PRINT_DEBUG("Invalid Transaction ID");
+    return;
+  }
+
+  path = transaction_map[tid].rvm->store_dir;
+  map<void*, list<undo_record_t>>::iterator it;
+  void *segbase;
+  undo_record_t undo_record;
+  map<void*,seg_t*>::iterator itseg;
+  string segname;
+  string log_filepath;
+  int log_file;
+
+  for( it=transaction_map[tid].undo_records.begin(); it !=transaction_map[tid].undo_records.end(); it++){
+    segbase = it->first;
+    itseg = transaction_map[tid].segments.find(segbase);
+    segname = itseg->second->seg_name;
+    log_filepath = path + "/" + segname + ".log";
+    log_file =  open(log_filepath.c_str(), O_RDWR | O_CREAT, 0755);
+    if(log_file == -1)
+    {
+      PRINT_DEBUG("Error: Could not open file");
+      continue;
+    }
+    lseek(log_file, 0, SEEK_END);
+    while(!it->second.empty())
+    {
+      undo_record = it->second.front();
+      write(log_file, &(undo_record.offset), sizeof(int));
+      write(log_file, &(undo_record.size), sizeof(int));
+      write(log_file, (char*) it_seg->second->address + undo_record.offset, undo_record.size);
+      operator delete(undo_record.backup);
+      it->second.pop_front();
+    }
+    it_seg->second->being_used = 0;
+    transaction_map[tid].segments.erase(it_seg);
+    transaction_map[tid].undo_records.erase(it);
+    close(log_file);
+  }
+  transaction_map.erase(tid);
 }
