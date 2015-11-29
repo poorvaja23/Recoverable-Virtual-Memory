@@ -257,9 +257,7 @@ trans_t rvm_begin_trans(rvm_t rvm, int numsegs, void **segbases)
 }
 
 void rvm_about_to_modify(trans_t tid, void *segbase, int offset, int size){
-  // trans_data
-
-  if(trans_data.count(tid)==0){
+  if(transaction_map.count(tid)==0){
     return;
   }
   if (transaction_map[tid].segments.count(segbase) == 0){
@@ -284,8 +282,7 @@ void rvm_commit_trans(trans_t tid){
     PRINT_DEBUG("Invalid Transaction ID");
     return;
   }
-
-  path = transaction_map[tid].rvm->store_dir;
+  string path = transaction_map[tid].rvm->store_dir;
   map<void*, list<undo_record_t>>::iterator it;
   void *segbase;
   undo_record_t undo_record;
@@ -311,12 +308,12 @@ void rvm_commit_trans(trans_t tid){
       undo_record = it->second.front();
       write(log_file, &(undo_record.offset), sizeof(int));
       write(log_file, &(undo_record.size), sizeof(int));
-      write(log_file, (char*) it_seg->second->address + undo_record.offset, undo_record.size);
+      write(log_file, (char*) itseg->second->address + undo_record.offset, undo_record.size);
       operator delete(undo_record.backup);
       it->second.pop_front();
     }
-    it_seg->second->being_used = 0;
-    transaction_map[tid].segments.erase(it_seg);
+    itseg->second->in_use = 0;
+    transaction_map[tid].segments.erase(itseg);
     transaction_map[tid].undo_records.erase(it);
     close(log_file);
   }
