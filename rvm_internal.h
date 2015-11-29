@@ -35,7 +35,14 @@ typedef rvm_data* rvm_t;
 
 typedef int trans_t;
 
+typedef struct{
+  int offset;
+  int size;
+  void *backup;
+} undo_record_t;
+
 typedef struct transaction_data {
   rvm_t rvm;
   map<void*, seg_t*> segments;
+  map<void*, list<undo_record_t>> undo_records;
 } trans_data;

@@ -265,8 +265,3 @@ void rvm_about_to_modify(trans_t tid, void *segbase, int offset, int size){
   if (trans_data[tid].)
 
 }
-
-void rvm_abort_trans(trans_t tid)
-{
-
-}
