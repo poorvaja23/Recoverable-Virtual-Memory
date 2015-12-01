@@ -1,5 +1,5 @@
 # Recoverable-Virtual-Memory
-## Team Members: Poorvaja Rajagopal and Shanu Salunke
+*Team Members:* Poorvaja Rajagopal and Shanu Salunke
 
 This file describes our implementation of a recoverable memory management system inspired by elements of Satyanarayanan et al.'s "Lightweight Recoverable Virtual Memory " and Lowell and Chen's,"Free Transactions With Rio Vista".
 
